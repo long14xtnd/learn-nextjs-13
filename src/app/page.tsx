@@ -6,45 +6,31 @@ import style1 from "@/styles/app.module.css";
 import style2 from "@/styles/main.module.css";
 import Table from "react-bootstrap/Table";
 import { useEffect } from "react";
+import useSWR from "swr";
+import TableData from "@/components/app.table";
 export default function Home() {
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("http://localhost:8000/blogs");
-
-      const data = await response.json();
-      console.log(data);
-    };
-    fetchData();
-  }, []);
-  return (
-    <Table striped bordered hover variant="dark">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Username</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td colSpan={2}>Larry the Bird</td>
-          <td>@twitter</td>
-        </tr>
-      </tbody>
-    </Table>
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data, error, isLoading } = useSWR(
+    "http://localhost:8000/blogs",
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const response = await fetch("http://localhost:8000/blogs");
+
+  //     const data = await response.json();
+  //     console.log(data);
+  //   };
+  //   fetchData();
+  // }, []);
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+  return <TableData blogs={data}></TableData>;
 }
