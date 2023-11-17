@@ -1,6 +1,8 @@
 "use client";
 import Table from "react-bootstrap/Table";
 import CreateModal from "./create.modal";
+import UpdateModal from "./update.modal";
+import Link from "next/link";
 interface IProps {
   blogs: IBlog[];
 }
@@ -8,7 +10,9 @@ import Button from "react-bootstrap/Button";
 import { useState } from "react";
 const TableData = (props: IProps) => {
   const { blogs } = props;
+  const [blog, setBlog] = useState<IBlog | null>(null);
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
+  const [showModalUpdate, setShowModalUpdate] = useState<boolean>(false);
   return (
     <>
       <div
@@ -30,15 +34,23 @@ const TableData = (props: IProps) => {
           </tr>
         </thead>
         <tbody>
-          {blogs?.map((blog) => {
+          {blogs?.map((item) => {
             return (
-              <tr key={blog.id}>
-                <td>{blog.id}</td>
-                <td>{blog.title}</td>
-                <td>{blog.author}</td>
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.title}</td>
+                <td>{item.author}</td>
                 <td>
-                  <Button>View</Button>
-                  <Button variant="warning" className="mx-3">
+                  <Link href={`blogs/${item.id}`} className="btn btn-primary">View</Link>
+                  {/* <Button>View</Button> */}
+                  <Button
+                    variant="warning"
+                    className="mx-3"
+                    onClick={() => {
+                      setBlog(item);
+                      setShowModalUpdate(true);
+                    }}
+                  >
                     Edit
                   </Button>
                   <Button variant="danger">Delete</Button>
@@ -52,6 +64,12 @@ const TableData = (props: IProps) => {
         showModalCreate={showModalCreate}
         setShowModalCreate={setShowModalCreate}
       ></CreateModal>
+      <UpdateModal
+        showModalUpdate={showModalUpdate}
+        setShowModalUpdate={setShowModalUpdate}
+        blog={blog}
+        setBlog={setBlog}
+      ></UpdateModal>
     </>
   );
 };
