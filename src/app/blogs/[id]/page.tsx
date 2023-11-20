@@ -22,7 +22,7 @@ const ViewDetailBlog = ({ params }: { params: { id: string } }) => {
   return (
     <div>
       <Link href="/blogs" className="btn btn-danger mt-3 mb-3">Back to home</Link>
-      <Card style={{ width: "18rem" }}>
+      <Card style={{ width: "18rem" }} className="text-center">
         <Card.Body>
           <Card.Title>{data?.title}</Card.Title>
           <Card.Text>{data?.content}</Card.Text>

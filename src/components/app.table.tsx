@@ -3,6 +3,8 @@ import Table from "react-bootstrap/Table";
 import CreateModal from "./create.modal";
 import UpdateModal from "./update.modal";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import { mutate } from "swr";
 interface IProps {
   blogs: IBlog[];
 }
@@ -13,6 +15,25 @@ const TableData = (props: IProps) => {
   const [blog, setBlog] = useState<IBlog | null>(null);
   const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
   const [showModalUpdate, setShowModalUpdate] = useState<boolean>(false);
+  const handleDelete = (id: number) => {
+    if (confirm(`Ban co chac muon xoa blog co id =${id}`)) {
+      fetch(`http://localhost:8000/blogs/${id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res) {
+            toast.success("delete successfully");
+
+            mutate("http://localhost:8000/blogs");
+          }
+        });
+    }
+  };
   return (
     <>
       <div
@@ -41,7 +62,9 @@ const TableData = (props: IProps) => {
                 <td>{item.title}</td>
                 <td>{item.author}</td>
                 <td>
-                  <Link href={`blogs/${item.id}`} className="btn btn-primary">View</Link>
+                  <Link href={`blogs/${item.id}`} className="btn btn-primary">
+                    View
+                  </Link>
                   {/* <Button>View</Button> */}
                   <Button
                     variant="warning"
@@ -53,7 +76,12 @@ const TableData = (props: IProps) => {
                   >
                     Edit
                   </Button>
-                  <Button variant="danger">Delete</Button>
+                  <Button
+                    variant="danger"
+                    onClick={() => handleDelete(item.id)}
+                  >
+                    Delete
+                  </Button>
                 </td>
               </tr>
             );
