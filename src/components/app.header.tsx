@@ -17,6 +17,9 @@ function Header() {
             <Link href="/blogs" className="nav-link">
               Blogs
             </Link>
+            <Link href="/movies" className="nav-link">
+              Movies
+            </Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
